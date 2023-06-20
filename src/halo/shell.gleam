@@ -1,10 +1,11 @@
 pub type ShellResult {
-    Ok
-    Error(AlreadyStarted)
+  Ok
+  Error(AlreadyStarted)
 }
 
 pub type AlreadyStarted {
-    AlreadyStarted
+  AlreadyStarted
 }
 
-pub external fn start() -> ShellResult = "shell" "start_interactive"
+pub external fn start() -> ShellResult =
+  "shell" "start_interactive"

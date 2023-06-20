@@ -3,16 +3,16 @@
 pub external type Module
 
 pub type ModuleResult {
-    Ok
-    Error(List(#(Module, What)))
+  Ok
+  Error(List(#(Module, What)))
 }
 
 pub type What {
-    Badfile
-    Nofile
-    OnLoadNotAllowed
-    Duplicated
-    NotPurged
-    StickyDirectory
-    PendingOnLoad
+  Badfile
+  Nofile
+  OnLoadNotAllowed
+  Duplicated
+  NotPurged
+  StickyDirectory
+  PendingOnLoad
 }
