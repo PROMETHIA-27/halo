@@ -7,5 +7,5 @@ pub type AlreadyStarted {
   AlreadyStarted
 }
 
-pub external fn start() -> ShellResult =
-  "shell" "start_interactive"
+@external(erlang, "shell", "start_interactive")
+pub fn start() -> ShellResult

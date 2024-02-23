@@ -1,7 +1,6 @@
 import gleam/dynamic
 import gleam/erlang/atom
 import gleam/erlang/process
-import gleam/erlang/file
 import gleam/io
 import gleam/list
 import gleam/string
@@ -11,6 +10,7 @@ import halo/fs
 import halo/modres
 import halo/shell
 import shellout
+import simplifile
 
 type Notification {
   Notification(path: String, events: List(Event))
@@ -24,10 +24,10 @@ type Event {
   Undefined
 }
 
-external fn decode_event(
+@external(erlang, "halo_erl", "decode_event")
+fn decode_event(
   event: dynamic.Dynamic,
-) -> Result(Event, List(dynamic.DecodeError)) =
-  "halo_erl" "decode_event"
+) -> Result(Event, List(dynamic.DecodeError))
 
 pub fn main() {
   let fswatcher = atom.create_from_string("fswatcher")
@@ -44,10 +44,10 @@ pub fn main() {
 pub fn update_path() {
   let _ = {
     let build_dir = "build/dev/erlang/"
-    use modules <- result.map(file.list_directory(build_dir))
+    use modules <- result.map(simplifile.read_directory(build_dir))
     modules
     |> list.filter_map(fn(module) {
-      case file.is_directory(build_dir <> module) {
+      case simplifile.verify_is_directory(build_dir <> module) {
         Ok(True) -> Ok(build_dir <> module <> "/ebin")
         _ -> Error(Nil)
       }
@@ -77,7 +77,9 @@ fn watch_loop() {
                 }
                 Error(mod) ->
                   io.println(
-                    "REPL: could not purge module " <> code.module_name(mod) <> ", please clean up processes running old code.",
+                    "REPL: could not purge module "
+                      <> code.module_name(mod)
+                      <> ", please clean up processes running old code.",
                   )
               }
             }
@@ -98,17 +100,13 @@ fn receive() -> Notification {
     |> process.selecting_anything(fn(msg) {
       let msg =
         msg
-        |> dynamic.tuple3(
-          dynamic.dynamic,
-          dynamic.dynamic,
-          fn(payload) {
-            payload
-            |> dynamic.tuple2(
-              dynamic.list(dynamic.int),
-              dynamic.list(decode_event),
-            )
-          },
-        )
+        |> dynamic.tuple3(dynamic.dynamic, dynamic.dynamic, fn(payload) {
+          payload
+          |> dynamic.tuple2(
+            dynamic.list(dynamic.int),
+            dynamic.list(decode_event),
+          )
+        })
 
       use #(_, _, #(path, events)) <- result.try(msg, _)
 
