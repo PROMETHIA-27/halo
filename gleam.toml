@@ -1,19 +1,21 @@
 name = "halo"
-version = "0.1.0"
+version = "1.0.0"
 description = "A Gleam project"
 
 licences = ["Apache-2.0"]
 repository = { type = "github", user = "PROMETHIA-27", repo = "halo" }
 
 [dependencies]
-gleam_stdlib = "~> 0.29"
+gleam_stdlib = "~> 0.35"
 fs = "~> 8.6"
 gleam_erlang = "~> 0.19"
 shellout = "~> 1.3"
 tomerl = "~> 0.5"
+simplifile = "~> 1.4"
 
 [dev-dependencies]
-gleeunit = "~> 0.10"
+gleeunit = "~> 1.0"
+
 
 [mote]
 bin_whitelist = [

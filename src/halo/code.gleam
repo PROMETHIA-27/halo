@@ -1,29 +1,26 @@
 import gleam/list
-import halo/modres.{Module}
+import halo/modres.{type Module}
 import gleam/erlang/charlist
 
-pub external fn modified_modules() -> List(Module) =
-  "code" "modified_modules"
+@external(erlang, "code", "modified_modules")
+pub fn modified_modules() -> List(Module)
 
-pub external fn atomic_load(List(Module)) -> modres.ModuleResult =
-  "code" "atomic_load"
+@external(erlang, "code", "atomic_load")
+pub fn atomic_load(module_lst: List(Module)) -> modres.ModuleResult
 
-pub external fn soft_purge(Module) -> Bool =
-  "code" "soft_purge"
+@external(erlang, "code", "soft_purge")
+pub fn soft_purge(module: Module) -> Bool
 
-pub external fn module_name(Module) -> String =
-  "halo_erl" "module_name"
+@external(erlang, "halo_erl", "module_name")
+pub fn module_name(module: Module) -> String
 
 pub fn soft_purge_all(modules: List(Module)) -> Result(Nil, Module) {
-  list.try_each(
-    modules,
-    fn(mod) {
-      case soft_purge(mod) {
-        True -> Ok(Nil)
-        False -> Error(mod)
-      }
-    },
-  )
+  list.try_each(modules, fn(mod) {
+    case soft_purge(mod) {
+      True -> Ok(Nil)
+      False -> Error(mod)
+    }
+  })
 }
 
 pub fn add_paths(paths: List(String)) -> modres.ModuleResult {
@@ -33,7 +30,5 @@ pub fn add_paths(paths: List(String)) -> modres.ModuleResult {
   add_paths_internal(paths)
 }
 
-pub external fn add_paths_internal(
-  paths: List(charlist.Charlist),
-) -> modres.ModuleResult =
-  "code" "add_paths"
+@external(erlang, "code", "add_paths")
+pub fn add_paths_internal(paths: List(charlist.Charlist)) -> modres.ModuleResult

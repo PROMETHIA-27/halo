@@ -1,12 +1,12 @@
 import gleam/erlang/atom
 import gleam/erlang/process
 
-pub external type LinkError
+pub type LinkError
 
-pub external type SubscribeResult
+pub type SubscribeResult
 
-pub external fn start_link(watcher: atom.Atom) -> Result(process.Pid, LinkError) =
-  "fs" "start_link"
+@external(erlang, "fs", "start_link")
+pub fn start_link(watcher: atom.Atom) -> Result(process.Pid, LinkError)
 
-pub external fn subscribe(watcher: atom.Atom) -> SubscribeResult =
-  "fs" "subscribe"
+@external(erlang, "fs", "subscribe")
+pub fn subscribe(watcher: atom.Atom) -> SubscribeResult

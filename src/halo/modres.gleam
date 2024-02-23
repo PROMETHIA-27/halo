@@ -1,6 +1,6 @@
 //// Had to move this type to a new module so it didn't collide with `Result`
 
-pub external type Module
+pub type Module
 
 pub type ModuleResult {
   Ok
