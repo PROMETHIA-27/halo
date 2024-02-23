@@ -15,15 +15,12 @@ pub fn soft_purge(module: Module) -> Bool
 pub fn module_name(module: Module) -> String
 
 pub fn soft_purge_all(modules: List(Module)) -> Result(Nil, Module) {
-  list.try_each(
-    modules,
-    fn(mod) {
-      case soft_purge(mod) {
-        True -> Ok(Nil)
-        False -> Error(mod)
-      }
-    },
-  )
+  list.try_each(modules, fn(mod) {
+    case soft_purge(mod) {
+      True -> Ok(Nil)
+      False -> Error(mod)
+    }
+  })
 }
 
 pub fn add_paths(paths: List(String)) -> modres.ModuleResult {
@@ -34,6 +31,4 @@ pub fn add_paths(paths: List(String)) -> modres.ModuleResult {
 }
 
 @external(erlang, "code", "add_paths")
-pub fn add_paths_internal(
-  paths: List(charlist.Charlist),
-) -> modres.ModuleResult
+pub fn add_paths_internal(paths: List(charlist.Charlist)) -> modres.ModuleResult
